@@ -1,0 +1,67 @@
+name: 发布用户脚本
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+concurrency:
+  group: userscript-release
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: 验证版本与仓库身份
+        id: version
+        run: node scripts/check-release.mjs
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uooc-study-plugin-${{ github.ref_name }}
+          path: dist/*.js
+          if-no-files-found: error
+      - name: 上传 GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRERELEASE: ${{ steps.version.outputs.prerelease }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist/*.js --clobber
+          else
+            release_flags=()
+            if [ "$PRERELEASE" = 'true' ]; then
+              release_flags+=(--prerelease)
+            fi
+            gh release create "$GITHUB_REF_NAME" dist/*.js --verify-tag --generate-notes "${release_flags[@]}"
+          fi
+      - name: 同步固定 Raw 更新地址
+        env:
+          CHANNEL: ${{ steps.version.outputs.channel }}
+        run: |
+          publish_dir="$RUNNER_TEMP/uooc-study-plugin-release"
+          if git ls-remote --exit-code --heads origin "$CHANNEL" >/dev/null; then
+            git fetch origin "$CHANNEL"
+            git worktree add -B "$CHANNEL" "$publish_dir" "origin/$CHANNEL"
+            node scripts/check-upgrade.mjs "$publish_dir/uooc-study-plugin.meta.js"
+          else
+            git worktree add --detach "$publish_dir"
+            git -C "$publish_dir" checkout --orphan "$CHANNEL"
+            git -C "$publish_dir" rm -rf .
+          fi
+          cp dist/uooc-study-plugin.user.js dist/uooc-study-plugin.meta.js "$publish_dir/"
+          git -C "$publish_dir" config user.name 'github-actions[bot]'
+          git -C "$publish_dir" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C "$publish_dir" add uooc-study-plugin.user.js uooc-study-plugin.meta.js
+          if ! git -C "$publish_dir" diff --cached --quiet; then
+            git -C "$publish_dir" commit -m "chore(release): $GITHUB_REF_NAME"
+            git -C "$publish_dir" push origin "HEAD:$CHANNEL"
+          fi

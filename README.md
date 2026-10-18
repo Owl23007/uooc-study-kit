@@ -1,0 +1,55 @@
+# UOOC Study Kit
+
+[![构建状态](https://github.com/Owl23007/uooc-study-kit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Owl23007/uooc-study-kit/actions/workflows/ci.yml) [![开发版本](https://img.shields.io/badge/version-0.1.0--dev-orange)](CHANGELOG.md) [![许可证 MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE) [![Tampermonkey](https://img.shields.io/badge/Tampermonkey-userscript-blue)](https://www.tampermonkey.net/)
+
+> [!IMPORTANT]
+> 本项目仅供学习、技术研究与交流，属于非官方辅助工具，与 UOOC 官方无关联，使用前请阅读下方使用声明
+
+> [!WARNING]
+> 使用声明与免责声明
+>
+> - 本项目仅供**个人学习、技术研究与交流**，请遵守平台规则、所在学校的学习与考试要求以及适用法律法规
+> - 不得将本项目用于作弊、代学代考、伪造学习记录、绕过监考或访问控制，以及其他违规用途
+> - AI 生成的答案和解析仅供参考，不保证正确性、完整性或适用性，使用者应独立判断并人工核验
+> - 使用者自行选择 API 服务商并保管 API Key，自行承担第三方服务费用及相关数据处理风险
+> - 本项目按 MIT 许可证以“原样”提供，不对功能可用性、平台兼容性、学习效果或成绩作任何保证
+> - 使用者自行承担使用或无法使用本项目的风险；在适用法律允许的范围内，作者及贡献者不对由此产生的账号限制、学习记录或成绩异常、数据损失、第三方费用及其他损失承担责任
+
+面向 UOOC（优课联盟）的非官方 Tampermonkey 学习辅助工具。提供旧版和新版课程导航、视频播放/暂停、1×/2× 倍速、静音、连续播放，以及用户自带 API Key 的题目辅助。视频和测验共用面板，运行记录展示请求状态、耗时、重试次数和回填结果
+
+课中小测保留原版的自动选择与确认。测验和试卷只回填答案，必须人工检查并手动提交。AI 解析依据会显示在运行记录的日志中，模型输出不保证正确
+
+## 安装与更新
+
+1. 安装 Tampermonkey([Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo) / [Firefox](https://addons.mozilla.org/firefox/addon/tampermonkey/) / [Edge](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo) / [Safari](https://apps.apple.com/app/tampermonkey/id1482490089))，并允许安装来自 GitHub 的用户脚本
+
+2. 打开 [开发版固定安装地址](https://raw.githubusercontent.com/Owl23007/uooc-study-kit/dev/uooc-study-plugin.user.js)，确认安装。当前版本为 `0.1.0-dev`，通过开发版通道更新
+
+## 本地开发
+
+要求 Node.js 22.12+ 和 pnpm 11.8.0，建议使用 Node.js 24
+
+```sh
+pnpm install --frozen-lockfile
+pnpm test
+pnpm build
+pnpm check
+```
+
+将本地 `dist/uooc-study-plugin.user.js` 导入 Tampermonkey 即可测试。没有独立网页入口，Vite 使用 library/IIFE 模式输出单文件脚本，关闭 JS/CSS 压缩，不做混淆，不远程加载业务代码。Vite 和 happy-dom 都只是开发依赖，运行产物没有第三方运行时依赖
+
+## 发布
+
+参见 [发布流程](docs/releasing.md)。
+
+普通 push/PR 校验后上传 Actions 构建附件；版本标签触发 GitHub Release 上传。预发布版本发布为 Pre-release 并同步 `dev` 分支，稳定版本同步 `release` 分支，固定 Raw 安装地址分别跟随对应通道更新
+
+## 隐私与权限
+
+API Key 只写入 Tampermonkey 的 GM 存储。
+
+题干、选项及错题评分反馈只会在用户发起答题操作时发送至配置的 API 服务商；连接测试发送简短探测消息，不携带真实题目。日志和请求记录不保存请求头、密钥或 API 错误响应原文。
+
+脚本只匹配指定 UOOC 学习与测验页面，禁止 iframe 重复运行。`unsafeWindow` 仅用于读取新版 AngularJS 目录；GM 请求使用无 Cookie 模式并拒绝重定向，请使用支持 `redirect: 'error'` 的新版 Tampermonkey。
+
+由于用户可以配置任意服务商，元数据保留 `@connect *`，同时列出常用和本地地址。请仅授权自己使用的 API 域名；若只使用固定服务商，可在脚本设置中收窄允许域名。Tampermonkey 的域名授权和更新元数据行为见[官方文档](https://www.tampermonkey.net/documentation.php?q=connect)。

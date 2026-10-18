@@ -1,0 +1,21 @@
+{
+  "name": "uooc-study-kit",
+  "version": "0.1.0-dev",
+  "private": true,
+  "packageManager": "pnpm@11.8.0",
+  "type": "module",
+  "description": "UOOC 非官方 Tampermonkey 学习辅助工具",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "build": "vite build && node scripts/check-dist.mjs",
+    "test": "node --test",
+    "check": "pnpm test && pnpm build"
+  },
+  "devDependencies": {
+    "happy-dom": "^21.0.3",
+    "vite": "^8.3.4"
+  }
+}
