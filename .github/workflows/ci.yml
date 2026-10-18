@@ -1,4 +1,4 @@
-name: 校验与构建
+name: build
 on:
   push:
     branches: [main]
