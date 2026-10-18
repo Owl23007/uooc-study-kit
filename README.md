@@ -1,6 +1,6 @@
 # UOOC Study Kit
 
-[![构建状态](https://github.com/Owl23007/uooc-study-kit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Owl23007/uooc-study-kit/actions/workflows/ci.yml) [![开发版本](https://img.shields.io/badge/version-0.1.0--dev-orange)](CHANGELOG.md) [![许可证 MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE) [![Tampermonkey](https://img.shields.io/badge/Tampermonkey-userscript-blue)](https://www.tampermonkey.net/)
+[![build](https://github.com/Owl23007/uooc-study-kit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Owl23007/uooc-study-kit/actions/workflows/ci.yml) [![version](https://img.shields.io/badge/version-0.1.0-blue)](CHANGELOG.md) [![许可证 MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE) [![Tampermonkey](https://img.shields.io/badge/Tampermonkey-userscript-blue)](https://www.tampermonkey.net/)
 
 > [!IMPORTANT]
 > 本项目仅供学习、技术研究与交流，属于非官方辅助工具，与 UOOC 官方无关联，使用前请阅读下方使用声明
@@ -23,7 +23,7 @@
 
 1. 安装 Tampermonkey([Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo) / [Firefox](https://addons.mozilla.org/firefox/addon/tampermonkey/) / [Edge](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo) / [Safari](https://apps.apple.com/app/tampermonkey/id1482490089))，并允许安装来自 GitHub 的用户脚本
 
-2. 打开 [开发版固定安装地址](https://raw.githubusercontent.com/Owl23007/uooc-study-kit/dev/uooc-study-plugin.user.js)，确认安装。当前版本为 `0.1.0-dev`，通过开发版通道更新
+2. 打开 [正式版安装地址](https://raw.githubusercontent.com/Owl23007/uooc-study-kit/release/uooc-study-plugin.user.js)，确认安装。
 
 ## 本地开发
 
@@ -36,13 +36,17 @@ pnpm build
 pnpm check
 ```
 
-将本地 `dist/uooc-study-plugin.user.js` 导入 Tampermonkey 即可测试。没有独立网页入口，Vite 使用 library/IIFE 模式输出单文件脚本，关闭 JS/CSS 压缩，不做混淆，不远程加载业务代码。Vite 和 happy-dom 都只是开发依赖，运行产物没有第三方运行时依赖
+开发版通过 [开发版安装地址](https://raw.githubusercontent.com/Owl23007/uooc-study-kit/dev/uooc-study-plugin.user.js) 获取远端最新，本地构建产物在 `dist/uooc-study-plugin.user.js`，可直接在 Tampermonkey 中安装或更新。
+
+在测试完毕后，需要通过创建 pr 来将本地变更合并到 `main`，并在 `CHANGELOG.md` 中记录本次变更、修复和兼容性说明。
+
+在之后的发布流程中，会生成正式版构建产物并上传到 GitHub Release 和对应更新分支。
 
 ## 发布
 
-参见 [发布流程](docs/releasing.md)。
+参见 [发布流程](docs/releasing.md)
 
-普通 push/PR 校验后上传 Actions 构建附件；版本标签触发 GitHub Release 上传。预发布版本发布为 Pre-release 并同步 `dev` 分支，稳定版本同步 `release` 分支，固定 Raw 安装地址分别跟随对应通道更新
+预发布版本发布为 Pre-release 并同步 `dev` 分支，稳定版本同步 `release` 分支。
 
 ## 隐私与权限
 

@@ -15,12 +15,12 @@
 - `uooc-study-plugin.user.js`：可读、未压缩、未混淆的独立用户脚本
 - `uooc-study-plugin.meta.js`：供 Tampermonkey 检查更新的元数据
 
-当前 `0.1.0-dev` 使用开发版固定地址：
+开发版固定地址（预发布）：
 
 - 安装：`https://raw.githubusercontent.com/Owl23007/uooc-study-kit/dev/uooc-study-plugin.user.js`
 - 更新：`https://raw.githubusercontent.com/Owl23007/uooc-study-kit/dev/uooc-study-plugin.meta.js`
 
-稳定版固定地址：
+正式版固定地址（当前版本 `0.1.0`）：
 
 - 安装：`https://raw.githubusercontent.com/Owl23007/uooc-study-kit/release/uooc-study-plugin.user.js`
 - 更新：`https://raw.githubusercontent.com/Owl23007/uooc-study-kit/release/uooc-study-plugin.meta.js`
